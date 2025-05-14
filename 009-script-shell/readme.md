@@ -81,51 +81,51 @@ Output should be:
 /Users/youruser/bin/recycle # macOS
 ```
 
-## Préparez quelques fichiers de test :
+## Prepare some test files:
 
 ```
-# Creez un répertoire de test
+# Create a test directory
 mkdir ./test_recycle
 cd test_recycle
 ```
 
-# Créez quelques fichiers exemples
+# Create some example files
 
 ```
-touch fichier1.txt
-touch fichier2.txt
-touch fichier3.txt
+touch file1.txt
+touch file2.txt
+touch file3.txt
 ```
 
-### Tests des différentes fonctionnalités :
+### Test the different features:
 
-> Déplacer des fichiers vers la corbeille :
+> Move files to the recycle bin:
 
 ```
-# Déplacer un ou plusieurs fichiers
-recycle fichier1.txt fichier2.txt
+# Move one or more files
+recycle file1.txt file2.txt
 ```
 
-> Lister le contenu de la corbeille :
+> List the contents of the recycle bin:
 
 ```
 recycle -l
 ```
 
-> Vider la corbeille :
+> Empty the recycle bin:
 
 ```
 recycle -r
 ```
 
-> Vérifier le comportement en cas d'erreur :
+> Check behavior in case of error:
 
 ```
-# Essayer de déplacer un fichier inexistant
-recycle fichier_inexistant.txt
+# Try to move a non-existent file
+recycle non_existent_file.txt
 ```
 
-> Tester sans arguments :
+> Test with no arguments:
 
 ```
 recycle
@@ -138,7 +138,7 @@ chmod +x backup.sh
 ```
 
 ```
-echo "Ceci est un fichier de test." > exemple.txt
+echo "This is a test file." > example.txt
 
 ```
 
