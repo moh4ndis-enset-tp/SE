@@ -111,3 +111,41 @@ recycle fichier1.txt fichier2.txt
 ```
 recycle -l
 ```
+
+> Vider la corbeille :
+
+```
+recycle -r
+```
+
+> Vérifier le comportement en cas d'erreur :
+
+```
+# Essayer de déplacer un fichier inexistant
+recycle fichier_inexistant.txt
+```
+
+> Tester sans arguments :
+
+```
+recycle
+```
+
+# backup
+
+```
+chmod +x backup.sh
+```
+
+```
+echo "Ceci est un fichier de test." > exemple.txt
+
+```
+
+```
+./backup.sh
+```
+
+```
+ls OLD
+```
