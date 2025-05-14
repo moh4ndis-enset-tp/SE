@@ -4,8 +4,8 @@
 afficher_menu() {
     echo "--- Gestion des Utilisateurs ---"
     echo "1. Lister les utilisateurs"
-    echo "2. Vérifier l'existence d'un utilisateur"
-    echo "3. Créer un utilisateur"
+    echo "2. Verifier l'existence d'un utilisateur"
+    echo "3. Creer un utilisateur"
     echo "4. Supprimer un utilisateur"
     echo "5. Quitter"
 
@@ -18,26 +18,26 @@ lister_utilisateurs() {
     echo "------------------------------------"
     
     # Utiliser cut pour afficher uniquement le nom d'utilisateur (1er champ)
-    # Filtrer uniquement les lignes où le 3ème champ (UID) est > 1000
+    # Filtrer uniquement les lignes où le 3eme champ (UID) est > 1000
     awk -F: '$3 >= 1000 && $3 < 65534 {print "Utilisateur: " $1 ", UID: " $3}' /etc/passwd
     echo "------------------------------------"
     echo "Total d'utilisateurs : $(awk -F: '$3 >= 1000 && $3 < 65534 {print $1}' /etc/passwd | wc -l)"
-    # Si aucun utilisateur n'est trouvé
+    # Si aucun utilisateur n'est trouve
     if [ -z "$(awk -F: '$3 >= 1000 && $3 < 65534 {print $1}' /etc/passwd)" ]; then
-        echo "Aucun utilisateur avec UID > 1000 n'a été trouvé."
+        echo "Aucun utilisateur avec UID > 1000 n'a ete trouve."
     fi
 }
 
-# Fonction pour vérifier l'existence d'un utilisateur
+# Fonction pour verifier l'existence d'un utilisateur
 verifier_utilisateur() {
     read -p "Entrez un login ou un UID : " recherche
     
-    # Vérifier si la recherche est numérique (supposé être un UID)
+    # Verifier si la recherche est numerique (suppose être un UID)
     if [[ "$recherche" =~ ^[0-9]+$ ]]; then
         # Recherche par UID
         utilisateur=$(awk -F: '$3 == '"$recherche"' {print $1}' /etc/passwd)
         if [ -n "$utilisateur" ]; then
-            echo "Utilisateur trouvé par UID : "
+            echo "Utilisateur trouve par UID : "
             getent passwd "$recherche"
             return 0
         fi
@@ -50,32 +50,32 @@ verifier_utilisateur() {
         fi
     fi
     
-    echo "Utilisateur non trouvé."
+    echo "Utilisateur non trouve."
     return 1
 }
 
-# Fonction pour créer un utilisateur
+# Fonction pour creer un utilisateur
 creer_utilisateur() {
-    # Vérifier que le script est exécuté par root
+    # Verifier que le script est execute par root
     if [[ $EUID -ne 0 ]]; then
-        echo "Erreur : Ce script doit être exécuté par root" 
+        echo "Erreur : Ce script doit être execute par root" 
         return 1
     fi
     
     # Demander le nom d'utilisateur
     read -p "Entrez le nom de login du nouvel utilisateur : " login
     
-    # Vérifier si l'utilisateur existe déjà
+    # Verifier si l'utilisateur existe deja
     if id "$login" &>/dev/null; then
-        echo "Erreur : L'utilisateur $login existe déjà."
-        echo "Détails de l'utilisateur existant :"
+        echo "Erreur : L'utilisateur $login existe deja."
+        echo "Details de l'utilisateur existant :"
         getent passwd "$login"
         return 1
     fi
     
-    # Vérifier si le répertoire personnel existe déjà
+    # Verifier si le repertoire personnel existe deja
     if [ -d "/home/$login" ]; then
-        echo "Erreur : Un répertoire /home/$login existe déjà."
+        echo "Erreur : Un repertoire /home/$login existe deja."
         return 1
     fi
     
@@ -83,33 +83,33 @@ creer_utilisateur() {
     read -s -p "Entrez un mot de passe pour $login : " mdp
     echo
     
-    # Créer l'utilisateur avec un répertoire personnel
+    # Creer l'utilisateur avec un repertoire personnel
     useradd -m "$login" 2>/dev/null
     
-    # Vérifier si la création a réussi
+    # Verifier si la creation a reussi
     if [ $? -ne 0 ]; then
-        echo "Erreur lors de la création de l'utilisateur. Vérifiez les logs système."
+        echo "Erreur lors de la creation de l'utilisateur. Verifiez les logs systeme."
         return 1
     fi
     
-    # Définir le mot de passe
+    # Definir le mot de passe
     echo "$login:$mdp" | chpasswd
     
-    echo "Utilisateur $login créé avec succès."
-    echo "Répertoire personnel : /home/$login"
+    echo "Utilisateur $login cree avec succes."
+    echo "Repertoire personnel : /home/$login"
 }
 # Fonction pour supprimer un utilisateur
 # Fonction pour supprimer un utilisateur
 supprimer_utilisateur() {
-    # Vérifier que le script est exécuté par root
+    # Verifier que le script est execute par root
     if [[ $EUID -ne 0 ]]; then
-        echo "Erreur : Ce script doit être exécuté par root"
+        echo "Erreur : Ce script doit être execute par root"
         return 1
     fi
 
-    read -p "Entrez le login de l'utilisateur à supprimer : " login
+    read -p "Entrez le login de l'utilisateur a supprimer : " login
 
-    # Vérifier si l'utilisateur existe
+    # Verifier si l'utilisateur existe
     if ! id "$login" &>/dev/null; then
         echo "Erreur : L'utilisateur $login n'existe pas."
         return 1
@@ -118,15 +118,15 @@ supprimer_utilisateur() {
     # Demander confirmation
     read -p "Êtes-vous sûr de vouloir supprimer l'utilisateur $login ? (o/N) : " confirmation
     if [[ "$confirmation" =~ ^[Oo]$ ]]; then
-        # Supprimer l'utilisateur et son répertoire personnel
+        # Supprimer l'utilisateur et son repertoire personnel
         userdel -r "$login" 2>/dev/null
         if [ $? -eq 0 ]; then
-            echo "Utilisateur $login supprimé avec succès."
+            echo "Utilisateur $login supprime avec succes."
         else
-            echo "Erreur lors de la suppression de l'utilisateur. Vérifiez les permissions ou l'état du système."
+            echo "Erreur lors de la suppression de l'utilisateur. Verifiez les permissions ou l'etat du systeme."
         fi
     else
-        echo "Suppression annulée."
+        echo "Suppression annulee."
     fi
 }
 
