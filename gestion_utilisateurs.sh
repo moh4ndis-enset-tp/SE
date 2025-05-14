@@ -23,7 +23,7 @@ lister_utilisateurs() {
     echo "------------------------------------"
     echo "Total d'utilisateurs : $(awk -F: '$3 >= 1000 && $3 < 65534 {print $1}' /etc/passwd | wc -l)"
     # Si aucun utilisateur n'est trouvé
-    if [ -z "$(awk -F: '$3 > 1000 && $3 < 65534 {print $1}' /etc/passwd)" ]; then
+    if [ -z "$(awk -F: '$3 >= 1000 && $3 < 65534 {print $1}' /etc/passwd)" ]; then
         echo "Aucun utilisateur avec UID > 1000 n'a été trouvé."
     fi
 }
