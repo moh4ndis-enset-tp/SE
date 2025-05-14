@@ -13,7 +13,16 @@ afficher_menu() {
 # Fonction pour lister les utilisateurs
 lister_utilisateurs() {
     echo "Liste des utilisateurs (UID > 1000) :"
-    awk -F: '$3 > 1000 {print $1}' /etc/passwd
+    echo "------------------------------------"
+    
+    # Utiliser cut pour afficher uniquement le nom d'utilisateur (1er champ)
+    # Filtrer uniquement les lignes où le 3ème champ (UID) est > 1000
+    awk -F: '$3 > 1000 && $3 < 65534 {print "Utilisateur: " $1 ", UID: " $3}' /etc/passwd
+    
+    # Si aucun utilisateur n'est trouvé
+    if [ -z "$(awk -F: '$3 > 1000 && $3 < 65534 {print $1}' /etc/passwd)" ]; then
+        echo "Aucun utilisateur avec UID > 1000 n'a été trouvé."
+    fi
 }
 
 # Fonction pour vérifier l'existence d'un utilisateur
@@ -56,6 +65,8 @@ creer_utilisateur() {
     # Vérifier si l'utilisateur existe déjà
     if id "$login" &>/dev/null; then
         echo "Erreur : L'utilisateur $login existe déjà."
+        echo "Détails de l'utilisateur existant :"
+        getent passwd "$login"
         return 1
     fi
     
@@ -69,8 +80,14 @@ creer_utilisateur() {
     read -s -p "Entrez un mot de passe pour $login : " mdp
     echo
     
-    # Créer l'utilisateur
-    useradd -m "$login"
+    # Créer l'utilisateur avec un répertoire personnel
+    useradd -m "$login" 2>/dev/null
+    
+    # Vérifier si la création a réussi
+    if [ $? -ne 0 ]; then
+        echo "Erreur lors de la création de l'utilisateur. Vérifiez les logs système."
+        return 1
+    fi
     
     # Définir le mot de passe
     echo "$login:$mdp" | chpasswd
