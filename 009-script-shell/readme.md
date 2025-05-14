@@ -59,7 +59,7 @@ chmod +x ~/bin/recycle.sh
 ## Make your script executable:
 
 ```
-chmod +x ~/bin/myscript
+chmod +x ~/bin/recycle
 ```
 
 ## Run your script from anywhere:
