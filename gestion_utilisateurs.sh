@@ -17,8 +17,9 @@ lister_utilisateurs() {
     
     # Utiliser cut pour afficher uniquement le nom d'utilisateur (1er champ)
     # Filtrer uniquement les lignes où le 3ème champ (UID) est > 1000
-    awk -F: '$3 > 1000 && $3 < 65534 {print "Utilisateur: " $1 ", UID: " $3}' /etc/passwd
-    
+    awk -F: '$3 >= 1000 && $3 < 65534 {print "Utilisateur: " $1 ", UID: " $3}' /etc/passwd
+    echo "------------------------------------"
+    echo "Total d'utilisateurs : $(awk -F: '$3 >= 1000 && $3 < 65534 {print $1}' /etc/passwd | wc -l)"
     # Si aucun utilisateur n'est trouvé
     if [ -z "$(awk -F: '$3 > 1000 && $3 < 65534 {print $1}' /etc/passwd)" ]; then
         echo "Aucun utilisateur avec UID > 1000 n'a été trouvé."
